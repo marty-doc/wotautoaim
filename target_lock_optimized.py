@@ -615,6 +615,9 @@ def _choose_tracking_point(player):
                   ARMOR_CANDIDATE_SEARCH_INTERVAL)
     if search_due:
         _target_last_armor_search = now
+        # A full scan uses shared scratch state for its candidate cell.
+        # Preserve the active tracking cell unless the candidate is accepted.
+        current_cell = _target_tracking_cell
         candidate = _find_expanded_aim_point(
             player, _target, ARMOR_SEARCH_GRID_SIZE)
         candidate_part = _target_expanded_part
@@ -626,6 +629,8 @@ def _choose_tracking_point(player):
             _target_point = candidate
             _target_tracking_part = candidate_part
             _target_tracking_cell = candidate_cell
+        else:
+            _target_tracking_cell = current_cell
 
     if _target_point is not None and _target_tracking_part is not None:
         _target_point_source_mode = (
